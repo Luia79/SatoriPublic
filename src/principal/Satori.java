@@ -45,7 +45,7 @@ public class Satori {
             cLogin.iniciarLogin();
            
         } else {
-            JOptionPane.showMessageDialog(null, "NO conectado a la BD", 
+            JOptionPane.showMessageDialog(null, "No ha conectado a la BD", 
                     "Error de conección", JOptionPane.ERROR_MESSAGE);
         }
 
