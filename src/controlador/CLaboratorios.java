@@ -1,7 +1,9 @@
 package controlador;
 
+import controlador.bd.Transacciones;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Laboratorio;
 import vista.VLaboratorios;
@@ -60,6 +62,10 @@ public class CLaboratorios implements ActionListener {
     
     }
     
+    
+    
+    
+    
     private void limpiarCampos() {
         this.idFilaTemporal = -1;
         this.vLaboratorios.txtNumero.setText("");
@@ -68,24 +74,21 @@ public class CLaboratorios implements ActionListener {
     
     private void insertar() {
         this.laboratorio = new Laboratorio();
-
         //recogemos los datos
-        int id = Integer.parseInt(this.vLaboratorios.txtNumero.getText());
         String nombre = this.vLaboratorios.txtNombre.getText();
-
         //asignamos al objeto
-        this.laboratorio.setIdLaboratorio(id);
         this.laboratorio.setNombre(nombre);
-
-        this.modelo.addRow(new Object[]{
-            this.laboratorio.getIdLaboratorio(),
-            this.laboratorio.getNombre()
-        });
-
-        this.vLaboratorios.tblRegistros.setModel(this.modelo);
-
-        this.contador++;
-    }
+        //Insertar Laboratorio en la base de datos
+        Transacciones t = new Transacciones();
+        if(t.insertarLaboratorio(laboratorio)){
+            JOptionPane.showMessageDialog(null, "Insertado correctamente", 
+                    "Exitoso", JOptionPane.DEFAULT_OPTION);
+        }else{
+            JOptionPane.showMessageDialog(null, "NO se inserto", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }//Cierra if
+        
+    }//Cierra metodo insertar
     
     private void buscar() {
         int idBuscar = Integer.parseInt(this.vLaboratorios.txtBuscar.getText());
@@ -112,23 +115,23 @@ public class CLaboratorios implements ActionListener {
     
     private void modificar(){
         this.laboratorio = new Laboratorio();
-
         //recogemos los datos        
         int numero = Integer.parseInt(this.vLaboratorios.txtNumero.getText());
         String nombre = this.vLaboratorios.txtNombre.getText();
-
         //asignamos al objeto        
         this.laboratorio.setIdLaboratorio(numero);
         this.laboratorio.setNombre(nombre);
-        
-        this.modelo.setValueAt(this.laboratorio.getIdLaboratorio(), this.idFilaTemporal, 0);
-        this.modelo.setValueAt(this.laboratorio.getNombre(), this.idFilaTemporal, 1);
-        
-        this.vLaboratorios.tblRegistros.setModel(this.modelo);
-    }
+         Transacciones t = new Transacciones();   
+        if(t.actualizarLaboratorio(laboratorio)){
+            JOptionPane.showMessageDialog(null, "Atualizado correctamente", 
+                    "Exitoso", JOptionPane.DEFAULT_OPTION);        
+        }else{
+            JOptionPane.showMessageDialog(null, "NO se Atualizado", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//Cierra metodo modificar laboratorio
     
     private void iniciarTabla() {                
-        
         this.modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
